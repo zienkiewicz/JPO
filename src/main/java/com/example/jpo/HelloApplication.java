@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import model.User;
+import utilities.HashUtil;
 
 public class HelloApplication extends Application {
     @Override
@@ -15,8 +16,8 @@ public class HelloApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
 
-        User user = new User("Username", "hashedPassword");
-        System.out.println("Username: " + user.getUsername());
+        User user = new User("Username", HashUtil.hashPassowrd("hashedPassword"));
+        System.out.println("Username: " + user.getUsername() + "\t Hashed password: " + user.getHashedPassword());
 
         stage.setTitle("Hello!");
         stage.setScene(scene);
