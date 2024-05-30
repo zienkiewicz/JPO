@@ -3,10 +3,16 @@ package com.example.jpo;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import kotlin.jvm.internal.Ref;
+import services.ErrorHandler;
+import services.Window;
 
 import java.io.IOException;
+import java.lang.ref.Reference;
 
 public class HelloController {
     @FXML
@@ -20,17 +26,18 @@ public class HelloController {
     @FXML
     protected void onRegisterNewAccountButtonClick()
     {
-        Stage stage = (Stage) welcomeText.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("register-view.fxml"));
         try
         {
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            stage.show();
+            Window wnd = new Window((Stage) welcomeText.getScene().getWindow());
+            wnd.loadScene(getClass().getResource("register-view.fxml"));
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            System.out.println(ex.getMessage());
+            ErrorHandler err = new ErrorHandler(Alert.AlertType.ERROR);
+            err.fromException(ex);
+            err.show();
+
+            System.exit(0);
         }
 
     }
