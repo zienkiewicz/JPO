@@ -18,16 +18,20 @@ public class HelloController {
     }
 
     @FXML
-    protected void onRegisterNewAccountButtonClick() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("register-view.fxml"));
+    protected void onRegisterNewAccountButtonClick()
+    {
+        Stage stage = (Stage) welcomeText.getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("register-view.fxml"));
+        try
+        {
             Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle("Register New Account");
             stage.setScene(scene);
             stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+
     }
 }

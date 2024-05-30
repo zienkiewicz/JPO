@@ -1,5 +1,8 @@
 package com.example.jpo;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import services.UserService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -24,6 +27,19 @@ public class RegistrationController {
         if (result) {
             messageLabel.setText("User successfully registered!");
             System.out.println("User registered successfully");
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+            try
+            {
+                Scene scene = new Scene(fxmlLoader.load());
+                stage.setScene(scene);
+                stage.show();
+            }
+            catch (Exception ex)
+            {
+                System.out.println(ex.getMessage());
+            }
         }
         else {
             messageLabel.setText("User could not be registered!");
