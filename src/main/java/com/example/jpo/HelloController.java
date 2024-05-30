@@ -19,8 +19,21 @@ public class HelloController {
     private Label welcomeText;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    protected void onLoginButtonClick()
+    {
+        try
+        {
+            Window wnd = new Window((Stage) welcomeText.getScene().getWindow());
+            wnd.loadScene(getClass().getResource("login-view.fxml"));
+        }
+        catch(Exception ex)
+        {
+            ErrorHandler err = new ErrorHandler(Alert.AlertType.ERROR);
+            err.fromException(ex);
+            err.show();
+
+            System.exit(0);
+        }
     }
 
     @FXML
