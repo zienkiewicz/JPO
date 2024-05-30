@@ -8,8 +8,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import model.User;
+import model.WeatherData;
 import utilities.HashUtil;
 import services.UserService;
+import services.WeatherService;
 
 public class HelloApplication extends Application {
     @Override
@@ -23,6 +25,9 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
+
+        WeatherService weatherService = new WeatherService();
+        WeatherData currentWeather = weatherService.getCurrentWeather();
         launch();
     }
 }

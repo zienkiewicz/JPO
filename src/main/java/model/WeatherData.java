@@ -23,3 +23,4 @@ public class WeatherData {
         return condition;
     }
 }
+
