@@ -3,8 +3,8 @@ package model;
 public class CurrencyRate {
     private String no;
     private String effectiveDate;
-    private double bid;
-    private double ask;
+    private String bid;
+    private String ask;
 
     public String getNo() {
         return no;
@@ -22,19 +22,19 @@ public class CurrencyRate {
         this.effectiveDate = effectiveDate;
     }
 
-    public double getBid() {
+    public String getBid() {
         return bid;
     }
 
-    public void setBid(double bid) {
+    public void setBid(String bid) {
         this.bid = bid;
     }
 
-    public double getAsk() {
+    public String getAsk() {
         return ask;
     }
 
-    public void setAsk(double ask) {
+    public void setAsk(String ask) {
         this.ask = ask;
     }
 }

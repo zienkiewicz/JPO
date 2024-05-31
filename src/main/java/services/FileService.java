@@ -6,20 +6,15 @@ import java.util.Properties;
 public class FileService {
     private static final String CONFIG_FILE = "config.txt";
 
-    public static String getProperty(String property) {
+    public static String getProperty(String property) throws Exception {
         Properties prop = new Properties();
-        try (InputStream in = new FileInputStream(CONFIG_FILE)) {
+        InputStream in = new FileInputStream(CONFIG_FILE);
             prop.load(in);
             return prop.get(property).toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
-    public static void appendResponse(String filePath, String data) {
+    public static void appendResponse(String filePath, String data) throws Exception {
         BufferedWriter bw = null;
-        try {
             File file = new File(filePath);
 
             if (!file.exists())
@@ -30,15 +25,8 @@ public class FileService {
 
             bw.write(data);
             bw.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bw != null)
-                    bw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+            bw.close();
+
+
     }
 }

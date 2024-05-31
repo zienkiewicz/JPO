@@ -1,7 +1,5 @@
 package services;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
@@ -11,11 +9,11 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-public class ErrorHandler {
+public class MessageBox {
     Alert alert;
     Optional<ButtonType> result = null;
 
-    public ErrorHandler(Alert.AlertType type)
+    public MessageBox(Alert.AlertType type)
     {
         alert = new Alert(type);
     }

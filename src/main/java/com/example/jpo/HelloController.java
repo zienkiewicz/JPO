@@ -1,18 +1,11 @@
 package com.example.jpo;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import kotlin.jvm.internal.Ref;
-import services.ErrorHandler;
+import services.MessageBox;
 import services.Window;
-
-import java.io.IOException;
-import java.lang.ref.Reference;
 
 public class HelloController {
     @FXML
@@ -28,7 +21,7 @@ public class HelloController {
         }
         catch(Exception ex)
         {
-            ErrorHandler err = new ErrorHandler(Alert.AlertType.ERROR);
+            MessageBox err = new MessageBox(Alert.AlertType.ERROR);
             err.fromException(ex);
             err.show();
 
@@ -46,7 +39,7 @@ public class HelloController {
         }
         catch(Exception ex)
         {
-            ErrorHandler err = new ErrorHandler(Alert.AlertType.ERROR);
+            MessageBox err = new MessageBox(Alert.AlertType.ERROR);
             err.fromException(ex);
             err.show();
 

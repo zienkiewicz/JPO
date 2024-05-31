@@ -14,7 +14,9 @@ module com.example.jpo {
     requires com.fasterxml.jackson.databind;
     requires com.google.gson;
 
-    opens model to com.google.gson;
+    opens model to com.google.gson, javafx.base;
     opens com.example.jpo to javafx.fxml;
+
     exports com.example.jpo;
+
 }

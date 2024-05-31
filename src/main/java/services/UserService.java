@@ -19,7 +19,7 @@ public class UserService {
         CANNOT_SAVE_USER,
     }
 
-    public static errCode registerUser(String username, String password) {
+    public static errCode registerUser(String username, String password) throws Exception{
 
         if(username.isEmpty() || password.isEmpty())
         {
@@ -49,9 +49,9 @@ public class UserService {
         }
     }
 
-    private static List<User> loadUsers() {
+    private static List<User> loadUsers() throws Exception{
         List<User> users = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader((new FileReader(USERS_FILE)))) {
+        BufferedReader reader = new BufferedReader((new FileReader(USERS_FILE)));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(":");
@@ -59,13 +59,11 @@ public class UserService {
                     users.add(new User(data[0], data[1]));
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         return users;
     }
 
-    public static boolean loginUser(String username, String password) {
+    public static boolean loginUser(String username, String password) throws Exception{
         String hashedPassword = HashUtil.hashPassword(password);
         List<User> users = loadUsers();
         for (User user : users) {

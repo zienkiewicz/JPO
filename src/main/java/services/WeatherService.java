@@ -7,9 +7,15 @@ import com.google.gson.Gson;
 import model.*;
 
 public class WeatherService {
-    private final String apiKey = FileService.getProperty("weather_api_key");
-    private final String city = FileService.getProperty("weather_city");
+    private final String apiKey;
+    private final String city;
     private static final String URL = "http://api.weatherapi.com/v1/current.json";
+
+    public WeatherService() throws Exception
+    {
+        apiKey = FileService.getProperty("weather_api_key");
+        city = FileService.getProperty("weather_city");
+    }
 
     public WeatherData getCurrentWeather() throws Exception {
 

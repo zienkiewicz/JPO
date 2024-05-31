@@ -4,11 +4,23 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
+import model.CurrencyRate;
+import model.CurrencyRateTable;
 import model.WeatherData;
-import services.ErrorHandler;
+import services.CurrencyService;
+import services.MessageBox;
 import services.WeatherService;
+
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class AppController
 {
@@ -48,7 +60,7 @@ public class AppController
         }
         catch (Exception ex)
         {
-            ErrorHandler error = new ErrorHandler(Alert.AlertType.ERROR);
+            MessageBox error = new MessageBox(Alert.AlertType.ERROR);
             error.fromException(ex);
             error.show();
 
@@ -59,11 +71,80 @@ public class AppController
     @FXML
     protected void onSendButtonClick()
     {
+        try
+        {
 
+            LocalDate localDate = currencyDate.getValue();
+            Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+            Date date = Date.from(instant);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            CurrencyService service = new CurrencyService();
+            CurrencyRateTable table = service.getCurrencyRateTable(currencySymbol.getText(),sdf.format(new Date()));
+        }
+        catch (Exception ex)
+        {
+            MessageBox error = new MessageBox(Alert.AlertType.ERROR);
+            error.fromException(ex);
+            error.show();
+        }
     }
     @FXML
     protected void onShowDataButtonClick()
     {
+        String symbol = currencySymbol.getText();
+        if(symbol.isEmpty())
+        {
+            MessageBox error = new MessageBox(Alert.AlertType.WARNING);
+            error.setTitle("Błąd");
+            error.setMessage("Nie podano symbolu");
+            error.show();
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle(symbol.toUpperCase());
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 10, 10, 10));
+
+        TableView table = new TableView();
+        TableColumn<CurrencyRate,String> dateColumn = new TableColumn<>("Date");
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("effectiveDate"));
+        TableColumn<CurrencyRate,String> bidColumn = new TableColumn<>("Bid");
+        bidColumn.setCellValueFactory(new PropertyValueFactory<>("bid"));
+        TableColumn<CurrencyRate,String> askColumn = new TableColumn<>("Ask");
+        askColumn.setCellValueFactory(new PropertyValueFactory<>("ask"));
+        table.getColumns().add(dateColumn);
+        table.getColumns().add(bidColumn);
+        table.getColumns().add(askColumn);
+
+        try
+        {
+            CurrencyService service = new CurrencyService();
+            CurrencyRateTable currencyRateTable = service.getCurrencyRateTable(currencySymbol.getText());
+
+            for(CurrencyRate currencyRate : currencyRateTable.getRates())
+            {
+                table.getItems().add(currencyRate);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox error = new MessageBox(Alert.AlertType.ERROR);
+            error.fromException(ex);
+            error.show();
+            return;
+        }
+
+
+        grid.add(table, 0, 0);
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+        dialog.showAndWait();
 
     }
 
