@@ -1,8 +1,6 @@
 package services;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class FileService {
@@ -16,6 +14,31 @@ public class FileService {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static void appendResponse(String filePath, String data) {
+        BufferedWriter bw = null;
+        try {
+            File file = new File(filePath);
+
+            if (!file.exists())
+                file.createNewFile();
+
+            FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+            bw = new BufferedWriter(fw);
+
+            bw.write(data);
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null)
+                    bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
