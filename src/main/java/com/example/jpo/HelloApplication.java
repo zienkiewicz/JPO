@@ -24,10 +24,5 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
-
-        WeatherService weatherService = new WeatherService();
-        WeatherData currentWeather = weatherService.getCurrentWeather();
-        launch();
-    }
+    public static void main(String[] args) {launch();}
 }

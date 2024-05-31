@@ -11,8 +11,8 @@ public class WeatherService {
     private final String city = FileService.getProperty("weather_city");
     private static final String URL = "http://api.weatherapi.com/v1/current.json";
 
-    public WeatherData getCurrentWeather() {
-        try {
+    public WeatherData getCurrentWeather() throws Exception {
+
             String urlStr = URL + "?key=" + apiKey + "&q=" + city;
             URL url = new URL(urlStr);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -38,9 +38,6 @@ public class WeatherService {
             System.out.println(condition);
 
             return new WeatherData(dateTime, temperature, condition);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+
     }
 }
