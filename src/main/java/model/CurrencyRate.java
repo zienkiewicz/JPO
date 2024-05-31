@@ -1,25 +1,40 @@
 package model;
 
 public class CurrencyRate {
-    private String dateTime;
-    private double rate;
-    private String currency;
+    private String no;
+    private String effectiveDate;
+    private double bid;
+    private double ask;
 
-    public CurrencyRate(String date, double rate, String currency) {
-        this.dateTime = date;
-        this.rate = rate;
-        this.currency = currency;
+    public String getNo() {
+        return no;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public void setNo(String no) {
+        this.no = no;
     }
 
-    public String getCurrency() {
-        return currency;
+    public String getEffectiveDate() {
+        return effectiveDate;
     }
 
-    public double getRate() {
-        return rate;
+    public void setEffectiveDate(String effectiveDate) {
+        this.effectiveDate = effectiveDate;
+    }
+
+    public double getBid() {
+        return bid;
+    }
+
+    public void setBid(double bid) {
+        this.bid = bid;
+    }
+
+    public double getAsk() {
+        return ask;
+    }
+
+    public void setAsk(double ask) {
+        this.ask = ask;
     }
 }
