@@ -8,19 +8,17 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CurrencyRate;
 import model.CurrencyRateTable;
 import model.WeatherData;
-import services.CurrencyService;
-import services.MessageBox;
-import services.WeatherService;
+import services.*;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AppController
 {
@@ -36,6 +34,9 @@ public class AppController
     @FXML
     private DatePicker currencyDate;
 
+    @FXML
+    private CheckBox uniqueEntries;
+
 
     private final Timeline timeline;
     public AppController()
@@ -47,11 +48,38 @@ public class AppController
     }
 
     @FXML
+    protected void initialize()
+    {
+        currencyDate.setDayCellFactory(param -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty)
+            {
+                super.updateItem(date, empty);
+                setDisable(empty || date.compareTo(LocalDate.now()) > 0 || (date.getDayOfWeek() == DayOfWeek.SUNDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY));
+            }
+        });
+    }
+
+    @FXML
     private void updateWeatherData()
     {
         try
         {
-            WeatherService weatherService = new WeatherService();
+            WeatherService weatherService;
+            try
+            {
+                weatherService = new WeatherService();
+            }
+            catch (Exception ex)
+            {
+                MessageBox error = new MessageBox(Alert.AlertType.ERROR);
+                error.setTitle("Błąd");
+                error.setMessage("Brak pliku config.txt");
+                error.show();
+                timeline.stop();
+                return;
+            }
+
             WeatherData currentWeather = weatherService.getCurrentWeather();
             date.setText(currentWeather.getDateTime());
             double t = currentWeather.getTemperatue();
@@ -74,20 +102,81 @@ public class AppController
         try
         {
             LocalDate localDate = currencyDate.getValue();
+            String currencySymbolText = currencySymbol.getText();
+            if(currencySymbolText.isEmpty())
+            {
+                MessageBox warning = new MessageBox(Alert.AlertType.WARNING);
+                warning.setTitle("Nieprawidłowy symbol");
+                warning.setMessage("Nie podano symbolu");
+                warning.show();
+                return;
+            }
+            else if(localDate == null)
+            {
+                MessageBox warning = new MessageBox(Alert.AlertType.WARNING);
+                warning.setTitle("Nieprawidłowa data");
+                warning.setMessage("Proszę podać datę");
+                warning.show();
+                return;
+            }
+            else if(localDate.isAfter(LocalDate.now(ZoneId.systemDefault())))
+            {
+                MessageBox warning = new MessageBox(Alert.AlertType.WARNING);
+                warning.setTitle("Nieprawidłowa data");
+                warning.setMessage("");
+                warning.show();
+                return;
+            }
+            else if(localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY)
+            {
+                MessageBox warning = new MessageBox(Alert.AlertType.WARNING);
+                warning.setTitle("Nieprawidłowa data");
+                warning.setMessage("");
+                warning.show();
+                return;
+            }
+
+
             Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
             Date date = Date.from(instant);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             CurrencyService service = new CurrencyService();
-            service.getCurrencyRateTable(currencySymbol.getText(),sdf.format(date));
+            try
+            {
+                service.getCurrencyRateTable(currencySymbolText,sdf.format(date));
+            }
+            catch (CurrencyServiceBadRequestException ex)
+            {
+                MessageBox warning = new MessageBox(Alert.AlertType.WARNING);
+                warning.setTitle("Niepowodzenie");
+                warning.setMessage("Podano nieprawidłowy symbol");
+                warning.show();
+                return;
+            }
+            catch (CurrencyServiceNoDataFoundException ex)
+            {
+                MessageBox warning = new MessageBox(Alert.AlertType.WARNING);
+                warning.setTitle("Niepowodzenie");
+                warning.setMessage("Brak danych dla tego przedziału czasowego");
+                warning.show();
+                return;
+            }
         }
         catch (Exception ex)
         {
             MessageBox error = new MessageBox(Alert.AlertType.ERROR);
             error.fromException(ex);
             error.show();
+            return;
         }
+        MessageBox success = new MessageBox(Alert.AlertType.INFORMATION);
+        success.setTitle("Sukces");
+        success.setMessage("Zapytanie przebiegło pomyślnie");
+        success.show();
     }
+
+
     @FXML
     protected void onShowDataButtonClick()
     {
@@ -124,9 +213,35 @@ public class AppController
         try
         {
             CurrencyService service = new CurrencyService();
-            CurrencyRateTable currencyRateTable = service.getCurrencyRateTable(currencySymbol.getText());
+            CurrencyRateTable currencyRateTable;
+            try
+            {
+                currencyRateTable = service.getCurrencyRateTable(currencySymbol.getText());
+            }
+            catch (CurrencyServiceNoDataFoundException ex)
+            {
+                MessageBox warning = new MessageBox(Alert.AlertType.WARNING);
+                warning.setTitle("Niepowodzenie");
+                warning.setMessage("Nie znaleziono danych dla podanego symbolu");
+                warning.show();
+                return;
+            }
+            Collection<CurrencyRate> rates;
+            if(uniqueEntries.isSelected())
+            {
+                Set<CurrencyRate> uniqueRates = new LinkedHashSet<CurrencyRate>();
+                for(CurrencyRate currencyRate : currencyRateTable.getRates())
+                {
+                    uniqueRates.add(currencyRate);
+                }
+                rates = uniqueRates;
+            }
+            else
+            {
+                rates = currencyRateTable.getRates();
+            }
 
-            for(CurrencyRate currencyRate : currencyRateTable.getRates())
+            for(CurrencyRate currencyRate : rates)
             {
                 table.getItems().add(currencyRate);
             }
@@ -148,4 +263,27 @@ public class AppController
 
     }
 
+    @FXML
+    protected void onLogoutClick()
+    {
+        try
+        {
+            MessageBox confirm = new MessageBox(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("");
+            confirm.setMessage("Czy napewno chcesz się wylogować?");
+            confirm.show();
+
+            if(confirm.getResponse() == ButtonType.OK)
+            {
+                SceneChanger wnd = new SceneChanger((Stage) date.getScene().getWindow());
+                wnd.loadScene(getClass().getResource("hello-view.fxml"));
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox error = new MessageBox(Alert.AlertType.ERROR);
+            error.fromException(ex);
+            error.show();
+        }
+    }
 }

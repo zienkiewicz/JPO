@@ -5,16 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.lang.ref.Reference;
-
 import java.net.URL;
 
-public class Window {
+public class SceneChanger {
     @FXML
     private Stage stage = null;
-    public Window() {}
-    public Window (Stage st)
+    public SceneChanger() {}
+    public SceneChanger(Stage st)
     {
         stage = st;
     }

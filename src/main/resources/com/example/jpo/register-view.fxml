@@ -7,7 +7,8 @@
    <children>
       <PasswordField fx:id="passwordField" layoutX="226.0" layoutY="188.0" />
       <TextField fx:id="usernameField" layoutX="226.0" layoutY="155.0" />
-      <Button onAction="#onRegisterButtonClick" layoutX="271.0" layoutY="227.0" mnemonicParsing="false" text="Register" />
-      <Label fx:id="messageLabel" layoutX="169.0" layoutY="279.0" prefHeight="17.0" prefWidth="264.0"/>
+      <Button layoutX="271.0" layoutY="227.0" mnemonicParsing="false" onAction="#onRegisterButtonClick" text="Register" />
+      <Label fx:id="messageLabel" layoutX="169.0" layoutY="279.0" prefHeight="17.0" prefWidth="264.0" />
+      <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#onReturnButtonClick" text="Wróć do głównego menu" />
    </children>
 </AnchorPane>

@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import services.MessageBox;
 import services.UserService;
-import services.Window;
+import services.SceneChanger;
 
 public class LoginController {
     @FXML
@@ -35,7 +35,7 @@ public class LoginController {
 
                 try
                 {
-                    Window wnd = new Window((Stage) login.getScene().getWindow());
+                    SceneChanger wnd = new SceneChanger((Stage) login.getScene().getWindow());
                     wnd.loadScene(getClass().getResource("application-view.fxml"));
                 }
                 catch (Exception ex)
@@ -63,6 +63,21 @@ public class LoginController {
             err.show();
         }
 
+    }
+    @FXML
+    protected void onReturnButtonClick()
+    {
+        try
+        {
+            SceneChanger wnd = new SceneChanger((Stage) login.getScene().getWindow());
+            wnd.loadScene(getClass().getResource("hello-view.fxml"));
+        }
+        catch (Exception ex)
+        {
+            MessageBox error = new MessageBox(Alert.AlertType.ERROR);
+            error.fromException(ex);
+            error.show();
+        }
     }
 
 }

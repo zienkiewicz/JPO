@@ -1,14 +1,11 @@
 package com.example.jpo;
 
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import services.MessageBox;
 import services.UserService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import services.Window;
+import services.SceneChanger;
 
 public class RegistrationController {
     @FXML
@@ -38,7 +35,7 @@ public class RegistrationController {
 
                 try
                 {
-                    Window wnd = new Window((Stage) usernameField.getScene().getWindow());
+                    SceneChanger wnd = new SceneChanger((Stage) usernameField.getScene().getWindow());
                     wnd.loadScene(getClass().getResource("hello-view.fxml"));
                 }
                 catch (Exception ex)
@@ -77,6 +74,21 @@ public class RegistrationController {
             MessageBox err = new MessageBox(Alert.AlertType.ERROR);
             err.fromException(ex);
             err.show();
+        }
+    }
+    @FXML
+    protected void onReturnButtonClick()
+    {
+        try
+        {
+            SceneChanger wnd = new SceneChanger((Stage) usernameField.getScene().getWindow());
+            wnd.loadScene(getClass().getResource("hello-view.fxml"));
+        }
+        catch (Exception ex)
+        {
+            MessageBox error = new MessageBox(Alert.AlertType.ERROR);
+            error.fromException(ex);
+            error.show();
         }
     }
 }

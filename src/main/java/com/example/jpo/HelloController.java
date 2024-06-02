@@ -5,7 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import services.MessageBox;
-import services.Window;
+import services.SceneChanger;
 
 public class HelloController {
     @FXML
@@ -16,7 +16,7 @@ public class HelloController {
     {
         try
         {
-            Window wnd = new Window((Stage) welcomeText.getScene().getWindow());
+            SceneChanger wnd = new SceneChanger((Stage) welcomeText.getScene().getWindow());
             wnd.loadScene(getClass().getResource("login-view.fxml"));
         }
         catch(Exception ex)
@@ -34,7 +34,7 @@ public class HelloController {
     {
         try
         {
-            Window wnd = new Window((Stage) welcomeText.getScene().getWindow());
+            SceneChanger wnd = new SceneChanger((Stage) welcomeText.getScene().getWindow());
             wnd.loadScene(getClass().getResource("register-view.fxml"));
         }
         catch(Exception ex)
