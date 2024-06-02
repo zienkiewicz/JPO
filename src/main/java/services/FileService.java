@@ -26,7 +26,18 @@ public class FileService {
             bw.write(data);
             bw.newLine();
             bw.close();
-
-
     }
+
+    public static void writeResponse(String filePath, String data) throws Exception {
+        BufferedWriter bw = null;
+        File file = new File(filePath);
+
+        FileWriter fw = new FileWriter(file.getAbsoluteFile(), false); // Set to overwrite mode
+        bw = new BufferedWriter(fw);
+
+        bw.write(data);
+        bw.newLine();
+        bw.close();
+    }
+
 }

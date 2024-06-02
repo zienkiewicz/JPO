@@ -2,7 +2,7 @@ package services;
 
 import com.google.gson.Gson;
 import model.CurrencyRateTable;
-
+import model.CurrencyRate;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -31,9 +31,16 @@ public class CurrencyService {
             conn.disconnect();
             Gson gson = new Gson();
             CurrencyRateTable table = gson.fromJson(content.toString(), CurrencyRateTable.class);
-            FileService.appendResponse(table.getCode() + ".txt",
-                    content.toString());
-            return table;
+            CurrencyRateTable main = getCurrencyRateTable(table.getCode());
+            if (main == null) {
+                FileService.writeResponse(table.getCode() + ".txt", content.toString());
+                return table;
+            }
+            for (CurrencyRate rate : table.getRates()) {
+                main.appendRate(rate);
+            }
+            FileService.writeResponse(table.getCode() + ".txt" ,gson.toJson(main, CurrencyRateTable.class));
+            return main;
     }
 
     public CurrencyRateTable getCurrencyRateTable(String currencyCode) throws Exception

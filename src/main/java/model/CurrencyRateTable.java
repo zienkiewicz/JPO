@@ -40,4 +40,8 @@ public class CurrencyRateTable {
     public void setRates(List<CurrencyRate> rates) {
         this.rates = rates;
     }
+
+    public void appendRate(CurrencyRate rate) {
+        this.rates.add(rate);
+    }
 }
