@@ -73,14 +73,13 @@ public class AppController
     {
         try
         {
-
             LocalDate localDate = currencyDate.getValue();
             Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
             Date date = Date.from(instant);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             CurrencyService service = new CurrencyService();
-            CurrencyRateTable table = service.getCurrencyRateTable(currencySymbol.getText(),sdf.format(new Date()));
+            service.getCurrencyRateTable(currencySymbol.getText(),sdf.format(date));
         }
         catch (Exception ex)
         {
@@ -111,6 +110,7 @@ public class AppController
         grid.setPadding(new Insets(20, 10, 10, 10));
 
         TableView table = new TableView();
+        table.getColumns().clear();
         TableColumn<CurrencyRate,String> dateColumn = new TableColumn<>("Date");
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("effectiveDate"));
         TableColumn<CurrencyRate,String> bidColumn = new TableColumn<>("Bid");
