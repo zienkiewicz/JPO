@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 
 public class CurrencyService {
@@ -30,8 +31,13 @@ public class CurrencyService {
             rd.close();
             conn.disconnect();
             Gson gson = new Gson();
+            CurrencyRateTable main;
             CurrencyRateTable table = gson.fromJson(content.toString(), CurrencyRateTable.class);
-            CurrencyRateTable main = getCurrencyRateTable(table.getCode());
+            try {
+                main = getCurrencyRateTable(table.getCode());
+            } catch (NoSuchFileException e) {
+                main = null;
+            }
             if (main == null) {
                 FileService.writeResponse(table.getCode() + ".txt", content.toString());
                 return table;
