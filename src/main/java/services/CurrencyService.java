@@ -52,11 +52,7 @@ public class CurrencyService {
             Gson gson = new Gson();
             CurrencyRateTable main;
             CurrencyRateTable table = gson.fromJson(content.toString(), CurrencyRateTable.class);
-            try {
-                main = getCurrencyRateTable(table.getCode());
-            } catch (NoSuchFileException e) {
-                main = null;
-            }
+            main = getCurrencyRateTableNoExcept(table.getCode());
             if (main == null) {
                 FileService.writeResponse(table.getCode() + ".txt", content.toString());
                 return table;
@@ -66,6 +62,22 @@ public class CurrencyService {
             }
             FileService.writeResponse(table.getCode() + ".txt" ,gson.toJson(main, CurrencyRateTable.class));
             return main;
+    }
+    // XDXDXDXD
+    private CurrencyRateTable getCurrencyRateTableNoExcept(String currencyCode) {
+        String path = String.format("%s.txt",currencyCode);
+        String content;
+        if(!new File(path).isFile())
+        {
+            return null;
+        }
+        try {
+            content = Files.readString(Paths.get(path));
+        } catch (Exception e) {
+            return null;
+        }
+        Gson gson = new Gson();
+        return gson.fromJson(content.toString(), CurrencyRateTable.class);
     }
 
     public CurrencyRateTable getCurrencyRateTable(String currencyCode) throws Exception
