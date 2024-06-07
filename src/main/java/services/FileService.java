@@ -12,6 +12,15 @@ public class FileService {
             prop.load(in);
             return prop.get(property).toString();
     }
+    public static void setProperty(String property, String value) throws Exception
+    {
+        Properties prop = new Properties();
+        InputStream in = new FileInputStream(CONFIG_FILE);
+        prop.load(in);
+        prop.setProperty(property, value);
+        OutputStream out = new FileOutputStream(CONFIG_FILE);
+        prop.store(out, null);
+    }
 
     public static void appendResponse(String filePath, String data) throws Exception {
         BufferedWriter bw = null;

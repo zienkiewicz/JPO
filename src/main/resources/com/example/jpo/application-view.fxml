@@ -34,5 +34,11 @@
       <Button fx:id="showData" layoutX="405.0" layoutY="175.0" mnemonicParsing="false" onAction="#onShowDataButtonClick" prefHeight="25.0" prefWidth="167.0" text="Wyświetl dane" />
       <CheckBox fx:id="uniqueEntries" layoutX="405.0" layoutY="209.0" mnemonicParsing="false" text="Pokazuj tylko unikalne wpisy" />
       <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#onLogoutClick" text="Wyloguj" />
+      <Button layoutX="14.0" layoutY="327.0" mnemonicParsing="false" onAction="#updateConfigData" text="Zaktualizuj konfigurację" />
+      <Label fx:id="cityLabel" layoutX="14.0" layoutY="127.0" prefHeight="40.0" prefWidth="291.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -5,8 +5,8 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.jpo.RegistrationController">
    <children>
-      <PasswordField fx:id="passwordField" layoutX="226.0" layoutY="188.0" />
       <TextField fx:id="usernameField" layoutX="226.0" layoutY="155.0" />
+      <PasswordField fx:id="passwordField" layoutX="226.0" layoutY="188.0" />
       <Button layoutX="271.0" layoutY="227.0" mnemonicParsing="false" onAction="#onRegisterButtonClick" text="Register" />
       <Label fx:id="messageLabel" layoutX="169.0" layoutY="279.0" prefHeight="17.0" prefWidth="264.0" />
       <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#onReturnButtonClick" text="Wróć do głównego menu" />

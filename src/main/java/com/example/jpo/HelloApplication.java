@@ -3,12 +3,16 @@ package com.example.jpo;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.File;
+import java.net.InetAddress;
+
 import model.User;
 import model.WeatherData;
+import services.MessageBox;
 import utilities.HashUtil;
 import services.UserService;
 import services.WeatherService;
@@ -43,5 +47,9 @@ public class HelloApplication extends Application {
         }
     }
 
-    public static void main(String[] args) { checkAndCreateFile("users.txt"); launch();}
+    public static void main(String[] args) {
+        checkAndCreateFile("config.txt");
+        checkAndCreateFile("users.txt");
+        launch();
+    }
 }

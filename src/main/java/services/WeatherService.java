@@ -11,6 +11,9 @@ public class WeatherService {
     private final String city;
     private static final String URL = "http://api.weatherapi.com/v1/current.json";
 
+    public String getApiKey() {return apiKey;}
+    public String getCity() {return city;}
+
     public WeatherService() throws Exception
     {
         apiKey = FileService.getProperty("weather_api_key");

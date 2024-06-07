@@ -3,13 +3,17 @@ package com.example.jpo;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import model.CurrencyRate;
 import model.CurrencyRateTable;
 import model.WeatherData;
@@ -37,6 +41,8 @@ public class AppController
     @FXML
     private CheckBox uniqueEntries;
 
+    @FXML
+    private Label cityLabel;
 
     private final Timeline timeline;
     public AppController()
@@ -44,7 +50,7 @@ public class AppController
         timeline = new Timeline(new KeyFrame(Duration.seconds(5*60), e -> updateWeatherData()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.playFromStart();
-        timeline.jumpTo(Duration.seconds((5*60)-0.01));
+        timeline.jumpTo(Duration.seconds((5*60)-0.1));
     }
 
     @FXML
@@ -58,6 +64,79 @@ public class AppController
                 setDisable(empty || date.compareTo(LocalDate.now()) > 0 || (date.getDayOfWeek() == DayOfWeek.SUNDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY));
             }
         });
+
+        try
+        {
+            new WeatherService();
+        }
+        catch (Exception e)
+        {
+            updateConfigData();
+        }
+    }
+
+    @FXML
+    protected void updateConfigData()
+    {
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("");
+        dialog.setHeaderText("Zaktualizuj dane");
+
+        ButtonType updateConfigButtonType = new ButtonType("Zaktualizuj dane", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateConfigButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        String configApiKey = new String();
+        String configCity = new String();
+
+        try
+        {
+            configApiKey = FileService.getProperty("weather_api_key");
+        }catch (Exception ex){}
+        try
+        {
+            configCity = FileService.getProperty("weather_city");
+        }catch (Exception ex){}
+
+        TextField apiKey = new TextField();
+        apiKey.setText(configApiKey);
+        TextField city = new TextField();
+        city.setText(configCity);
+
+        grid.add(new Label("Klucz:"), 0, 0);
+        grid.add(apiKey, 1, 0);
+        grid.add(new Label("Miasto:"), 0, 1);
+        grid.add(city, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(() -> apiKey.requestFocus());
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateConfigButtonType) {
+                return new Pair<>(apiKey.getText(), city.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        result.ifPresent(configData -> {
+            try
+            {
+                FileService.setProperty("weather_api_key",configData.getKey());
+                FileService.setProperty("weather_city",configData.getValue());
+
+                timeline.playFromStart();
+                timeline.jumpTo(Duration.seconds((5*60)-0.1));
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -65,33 +144,16 @@ public class AppController
     {
         try
         {
-            WeatherService weatherService;
-            try
-            {
-                weatherService = new WeatherService();
-            }
-            catch (Exception ex)
-            {
-                MessageBox error = new MessageBox(Alert.AlertType.ERROR);
-                error.setTitle("Błąd");
-                error.setMessage("Brak pliku config.txt");
-                error.show();
-                timeline.stop();
-                return;
-            }
-
+            WeatherService weatherService = new WeatherService();
             WeatherData currentWeather = weatherService.getCurrentWeather();
             date.setText(currentWeather.getDateTime());
             double t = currentWeather.getTemperatue();
             temp.setText(String.format("%.2f\u00B0C", t));
             condition.setText(currentWeather.getCondition());
+            cityLabel.setText(weatherService.getCity());
         }
         catch (Exception ex)
         {
-            MessageBox error = new MessageBox(Alert.AlertType.ERROR);
-            error.fromException(ex);
-            error.show();
-
             timeline.stop();
         }
     }
