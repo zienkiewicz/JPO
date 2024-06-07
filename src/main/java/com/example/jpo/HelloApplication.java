@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-
+import java.io.File;
 import model.User;
 import model.WeatherData;
 import utilities.HashUtil;
@@ -24,5 +24,24 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {launch();}
+    private static void checkAndCreateFile(String fileName) {
+        File file = new File(fileName);
+
+        if (!file.exists()) {
+            try {
+                boolean created = file.createNewFile();
+                if (created) {
+                    System.out.println(fileName + " created successfully.");
+                } else {
+                    System.out.println("Failed to create " + fileName + ".");
+                }
+            } catch (IOException e) {
+                System.err.println("An error occurred while creating " + fileName + ": " + e.getMessage());
+            }
+        } else {
+            System.out.println(fileName + " already exists.");
+        }
+    }
+
+    public static void main(String[] args) { checkAndCreateFile("users.txt"); launch();}
 }
