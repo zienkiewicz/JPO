@@ -82,15 +82,11 @@ public class CurrencyService {
 
     public CurrencyRateTable getCurrencyRateTable(String currencyCode) throws Exception
     {
-        String path = String.format("%s.txt",currencyCode);
-        if(!new File(path).isFile())
+        CurrencyRateTable table = getCurrencyRateTableNoExcept(currencyCode);
+        if(table == null)
         {
             throw new CurrencyServiceNoDataFoundException("No data found for specified currencyCode");
         }
-
-        String content = Files.readString(Paths.get(path));
-        Gson gson = new Gson();
-        CurrencyRateTable table = gson.fromJson(content.toString(), CurrencyRateTable.class);
         return table;
     }
 }
